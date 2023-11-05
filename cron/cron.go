@@ -1,12 +1,12 @@
 package cron
 
 import (
-	"bit-particle-cannon/registry"
-	"bit-particle-cannon/util/lark"
-	"bit-particle-cannon/util/leetcode"
-	btmpl "bit-particle-cannon/util/template"
-	"bit-particle-cannon/util/tianapi"
 	"bytes"
+	"github.com/futuregadgetlabx/bit-particle-cannon/registry"
+	"github.com/futuregadgetlabx/bit-particle-cannon/util/lark"
+	"github.com/futuregadgetlabx/bit-particle-cannon/util/leetcode"
+	btmpl "github.com/futuregadgetlabx/bit-particle-cannon/util/template"
+	"github.com/futuregadgetlabx/bit-particle-cannon/util/tianapi"
 	"github.com/sirupsen/logrus"
 	"html/template"
 	"regexp"

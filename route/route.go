@@ -1,7 +1,7 @@
 package route
 
 import (
-	"bit-particle-cannon/handler"
+	"github.com/futuregadgetlabx/bit-particle-cannon/handler"
 	"github.com/gin-gonic/gin"
 )
 

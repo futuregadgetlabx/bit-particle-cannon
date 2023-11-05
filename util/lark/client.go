@@ -1,8 +1,8 @@
 package lark
 
 import (
-	"bit-particle-cannon/config"
 	"context"
+	"github.com/futuregadgetlabx/bit-particle-cannon/config"
 	"github.com/larksuite/oapi-sdk-go/v3"
 	larkim "github.com/larksuite/oapi-sdk-go/v3/service/im/v1"
 	"github.com/sirupsen/logrus"

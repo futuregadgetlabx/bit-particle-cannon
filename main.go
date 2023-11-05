@@ -1,10 +1,10 @@
 package main
 
 import (
-	"bit-particle-cannon/config"
-	bcron "bit-particle-cannon/cron"
-	"bit-particle-cannon/registry"
-	"bit-particle-cannon/route"
+	"github.com/futuregadgetlabx/bit-particle-cannon/config"
+	bcron "github.com/futuregadgetlabx/bit-particle-cannon/cron"
+	"github.com/futuregadgetlabx/bit-particle-cannon/registry"
+	"github.com/futuregadgetlabx/bit-particle-cannon/route"
 	"github.com/gin-gonic/gin"
 	"github.com/robfig/cron"
 )

@@ -1,8 +1,8 @@
 package tianapi
 
 import (
-	"bit-particle-cannon/config"
 	"encoding/json"
+	"github.com/futuregadgetlabx/bit-particle-cannon/config"
 	"io"
 	"net/http"
 )
