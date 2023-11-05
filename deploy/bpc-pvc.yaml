@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bit-particle-cannon-pvc
+  namespace: futuregadgetlabx
+  annotations:
+    everest.io/disk-volume-type: GPSSD
+    everest.io/disk-volume-tags: '{"app":"bit-particle-cannon"}'
+  labels:
+    failure-domain.beta.kubernetes.io/region: cn-south-1
+    failure-domain.beta.kubernetes.io/zone: cn-south-1c
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: csi-disk

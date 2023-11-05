@@ -1,0 +1,8 @@
+lark:
+  bot:
+    app_id: 机器人的app_id
+    app_secret: 机器人的app_secret
+  chat_id: 机器人所在群组的chat_id
+
+tianapi:
+  key: 天行数据的key

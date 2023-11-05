@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: futuregadgetlabx
+  name: bit-particle-cannon
+  labels:
+    app: bit-particle-cannon
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bit-particle-cannon
+  template:
+    metadata:
+      name: bit-particle-cannon
+      labels:
+        app: bit-particle-cannon
+    spec:
+      containers:
+        - name: bit-particle-cannon
+          image: cruii/bit-particle-cannon:latest
+          imagePullPolicy: Always
+          volumeMounts:
+            - mountPath: /app/config.yaml
+              name: config-volume
+              subPath: config
+            - mountPath: /data
+              name: bit-particle-cannon
+      restartPolicy: Always
+      volumes:
+        - name: config-volume
+          configMap:
+            name: bit-particle-cannon
+        - name: bit-particle-cannon
+          persistentVolumeClaim:
+            claimName: bit-particle-cannon-pvc
