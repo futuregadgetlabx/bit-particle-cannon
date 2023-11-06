@@ -6,3 +6,4 @@ lark:
 
 tianapi:
   key: 天行数据的key
+cron: "0 0 10 * * ?"
