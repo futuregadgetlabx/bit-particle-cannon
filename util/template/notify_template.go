@@ -38,7 +38,7 @@ const Basic = `
         {
           "is_short": true,
           "text": {
-            "content": "<at id={{ .UserId }}></at> 🎈累计提交天数:{{ .UserCalendar.TotalActiveDays }} 🚀连续提交:{{ .UserCalendar.RecentStreak }} 📅上次提交: {{ .UserCalendar.LastSubmit }}",
+            "content": "{{range $index, $value := .UserCalendars}}<at id={{$value.LarkID}}></at>\n🎈累计提交天数:{{$value.TotalActiveDays}} 🚀连续提交:{{$value.RecentStreak}} 📅上次提交:{{$value.LastSubmit}}\n{{end}}",
             "tag": "lark_md"
           }
         }
@@ -87,11 +87,10 @@ const Basic = `
 }`
 
 type BasicTemplate struct {
-	UserId       string
-	Sentence     string
-	Source       string
-	Question     Question
-	UserCalendar UserCalendar
+	Sentence      string
+	Source        string
+	Question      Question
+	UserCalendars []UserCalendar
 }
 
 type Question struct {
@@ -103,6 +102,7 @@ type Question struct {
 }
 
 type UserCalendar struct {
+	LarkID          string
 	TotalActiveDays int
 	RecentStreak    int
 	LastSubmit      string
