@@ -11,7 +11,7 @@ var Users = make(map[string]string)
 var dataFile string
 
 const (
-	DataFileRelease = "/data/users.data"
+	DataFileRelease = "/opt/bpc/data/users.data"
 	DataFileDev     = "users.data"
 )
 
@@ -23,7 +23,7 @@ func Load() {
 	}
 	_, err := os.Stat(dataFile)
 	if err != nil && os.IsNotExist(err) {
-		_, err := os.Create(dataFile)
+		_, err = os.Create(dataFile)
 		if err != nil {
 			panic(err)
 		}

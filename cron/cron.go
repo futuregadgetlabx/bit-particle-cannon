@@ -2,6 +2,7 @@ package cron
 
 import (
 	"bytes"
+	"github.com/futuregadgetlabx/bit-particle-cannon/config"
 	"github.com/futuregadgetlabx/bit-particle-cannon/registry"
 	"github.com/futuregadgetlabx/bit-particle-cannon/util/lark"
 	"github.com/futuregadgetlabx/bit-particle-cannon/util/leetcode"
@@ -22,40 +23,45 @@ var difficultyMap = map[string]string{
 }
 
 func Notification() {
+	b := &btmpl.BasicTemplate{}
+
 	for larkID, creds := range registry.Users {
 		lcClient := leetcode.NewClient(creds)
 		calendar, err := lcClient.GetUserCalendar()
-		question, err := lcClient.GetDailyQuestion()
 		if err != nil {
 			logrus.WithError(err).Error("leetcode client request error")
 			return
 		}
-		b := &btmpl.BasicTemplate{}
-		buildMsg(b, calendar, larkID, question)
-
-		tmpl, err := template.New("template").Parse(btmpl.Basic)
-		var filledTmpl bytes.Buffer
-		err = tmpl.Execute(&filledTmpl, b)
-		if err != nil {
-			logrus.WithError(err).Error("template execute error")
-			return
-		}
-		err = lark.SendMsg(larkID, "interactive", filledTmpl.String())
-		if err != nil {
-			logrus.WithError(err).Error("send message error")
-		}
+		buildCalendar(b, calendar, larkID)
+	}
+	lcClient := leetcode.NewClient("")
+	question, err := lcClient.GetDailyQuestion()
+	buildQuestion(b, question)
+	tmpl, err := template.New("template").Parse(btmpl.Basic)
+	var filledTmpl bytes.Buffer
+	err = tmpl.Execute(&filledTmpl, b)
+	if err != nil {
+		logrus.WithError(err).Error("template execute error")
+		return
+	}
+	err = lark.SendMsg(config.App.Lark.ChatID, "interactive", "chat_id", filledTmpl.String())
+	if err != nil {
+		logrus.WithError(err).Error("send message error")
 	}
 }
-
-func buildMsg(b *btmpl.BasicTemplate, calendar *leetcode.UserCalendarResp, larkID string, question *leetcode.DailyQuestionResp) {
+func buildCalendar(b *btmpl.BasicTemplate, calendar *leetcode.UserCalendarResp, larkID string) {
+	uc := btmpl.UserCalendar{
+		LarkID:          larkID,
+		TotalActiveDays: calendar.Data.UserCalendar.TotalActiveDays,
+		RecentStreak:    calendar.Data.UserCalendar.RecentStreak,
+		LastSubmit:      parseLastSubmit(calendar.Data.UserCalendar.SubmissionCalendar),
+	}
+	b.UserCalendars = append(b.UserCalendars, uc)
+}
+func buildQuestion(b *btmpl.BasicTemplate, question *leetcode.DailyQuestionResp) {
 	sentence := tianapi.GetSentence()
 	b.Sentence = sentence[0]
 	b.Source = sentence[1]
-	c := calendar.Data.UserCalendar
-	b.UserCalendar.TotalActiveDays = c.TotalActiveDays
-	b.UserCalendar.RecentStreak = c.RecentStreak
-	b.UserCalendar.LastSubmit = parseLastSubmit(c.SubmissionCalendar)
-	b.UserId = larkID
 	q := question.Data.TodayRecord[0].Question
 	b.Question.Title = q.QuestionID + ":" + q.TitleCn
 	b.Question.Url = "https://leetcode.cn/problems/" + q.TitleSlug

@@ -17,7 +17,7 @@ func main() {
 	registry.Load()
 	c := cron.New()
 	// 添加定时任务
-	err := c.AddFunc("0 0 10 * * ? ", bcron.Notification)
+	err := c.AddFunc(config.App.Cron, bcron.Notification)
 	if err != nil {
 		panic(err)
 	}
