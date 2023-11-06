@@ -17,7 +17,9 @@ func HandleLark(c *gin.Context) {
 	var e lark.Event
 	err := c.ShouldBindJSON(&e)
 	if err != nil {
-		c.JSON(http.StatusOK, err.Error())
+		c.JSON(http.StatusOK, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 	userID := e.Event.Sender.SenderID.UserID
@@ -29,24 +31,35 @@ func HandleLark(c *gin.Context) {
 		err = lark.SendMsg(userID, "text", "user_id", "{\"text\":\"添加失败，凭证不合法\"}")
 		if err != nil {
 			logrus.WithError(err).Error("send message error")
-			c.JSON(http.StatusOK, err.Error())
+			c.JSON(http.StatusOK, gin.H{
+				"error": err.Error(),
+			})
 			return
 		}
-		c.JSON(http.StatusOK, "ok")
+		c.JSON(http.StatusOK, gin.H{
+			"data": "ok",
+		})
 		return
 	}
 	lcClient := leetcode.NewClient(msg.Text)
 	status, err := lcClient.GetUserStatus()
 	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 	err = lark.SendMsg(userID, "text", "user_id",
-		fmt.Sprintf("{\"text\":\"添加用户[%v]成功，凭证不合法\"}", status.Data.UserStatus.Username))
+		fmt.Sprintf("{\"text\":\"添加用户[%v]成功\"}", status.Data.UserStatus.Username))
 	if err != nil {
 		logrus.WithError(err).Error("send message error")
-		c.JSON(http.StatusOK, err.Error())
+		c.JSON(http.StatusOK, gin.H{
+			"error": err.Error(),
+		})
 		return
 	}
 
-	c.JSON(http.StatusOK, "ok")
+	c.JSON(http.StatusOK, gin.H{
+		"data": "ok",
+	})
 }
