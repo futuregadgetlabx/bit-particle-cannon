@@ -1,6 +1,6 @@
 FROM golang:1.20-alpine AS builder
 LABEL maintainer="cruii <cruii811@gmail.com>" \
-  org.label-schema.name="drone-feishu" \
+  org.label-schema.name="bit-particle-cannon" \
   org.label-schema.vendor="cruii" \
   org.label-schema.schema-version="1.0"
 
