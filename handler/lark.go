@@ -22,44 +22,39 @@ func HandleLark(c *gin.Context) {
 		})
 		return
 	}
-	userID := e.Event.Sender.SenderID.UserID
-	var msg lark.MsgContent
-	_ = json.Unmarshal([]byte(e.Event.Message.Content), &msg)
-	err = registry.Add(userID, msg.Text)
-	if err != nil {
-		logrus.WithError(err).Error("add user error.")
-		err = lark.SendMsg(userID, "text", "user_id", "{\"text\":\"添加失败，凭证不合法\"}")
-		if err != nil {
-			logrus.WithError(err).Error("send message error")
-			c.JSON(http.StatusOK, gin.H{
-				"error": err.Error(),
-			})
+
+	go func() {
+		if e.Event.Message.ChatType != lark.ChatTypeP2P {
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{
-			"data": "ok",
-		})
-		return
-	}
-	lcClient := leetcode.NewClient(msg.Text)
-	status, err := lcClient.GetUserStatus()
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
-	err = lark.SendMsg(userID, "text", "user_id",
-		fmt.Sprintf("{\"text\":\"添加用户[%v]成功\"}", status.Data.UserStatus.Username))
-	if err != nil {
-		logrus.WithError(err).Error("send message error")
-		c.JSON(http.StatusOK, gin.H{
-			"error": err.Error(),
-		})
-		return
-	}
+		userID := e.Event.Sender.SenderID.UserID
+		var msg lark.MsgContent
+		_ = json.Unmarshal([]byte(e.Event.Message.Content), &msg)
+		err = registry.Add(userID, msg.Text)
+		if err != nil {
+			logrus.WithError(err).Error("add user error.")
+			err = lark.SendMsg(userID, "text", "user_id", "{\"text\":\"添加失败，凭证不合法\"}")
+			if err != nil {
+				logrus.WithError(err).Error("send message error")
+				return
+			}
+			return
+		}
+		lcClient := leetcode.NewClient(msg.Text)
+		status, err := lcClient.GetUserStatus()
+		if err != nil {
+			logrus.WithError(err).Error("get user status error")
+			return
+		}
+		err = lark.SendMsg(userID, "text", "user_id",
+			fmt.Sprintf("{\"text\":\"添加用户[%v]成功\"}", status.Data.UserStatus.Username))
+		if err != nil {
+			logrus.WithError(err).Error("send message error")
+			return
+		}
+	}()
 
 	c.JSON(http.StatusOK, gin.H{
-		"data": "ok",
+		"msg": "ok",
 	})
 }
